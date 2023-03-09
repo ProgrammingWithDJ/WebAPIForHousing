@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebAPIForHousing.Data;
+using WebAPIForHousing.Models;
 
 namespace WebAPIForHousing.Controllers
 {
@@ -7,10 +10,17 @@ namespace WebAPIForHousing.Controllers
     [ApiController]
     public class CityController : ControllerBase
     {
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly DataContext db;
+
+        public CityController(DataContext db)
         {
-            return new[] { "Mumbai" };
+            this.db = db;
+        }
+
+        [HttpGet]
+        public IActionResult GetCities()
+        {
+            return Ok(db.Cities.ToList());
         }
 
         [HttpGet("{id}")]
