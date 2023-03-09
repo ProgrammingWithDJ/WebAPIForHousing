@@ -18,9 +18,10 @@ namespace WebAPIForHousing.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetCities()
+        public async Task<IActionResult> GetCities()
         {
-            return Ok(db.Cities.ToList());
+            var cities = await db.Cities.ToListAsync();
+            return Ok(cities);
         }
 
         [HttpGet("{id}")]
