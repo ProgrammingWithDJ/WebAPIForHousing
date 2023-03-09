@@ -24,7 +24,34 @@ namespace WebAPIForHousing.Controllers
             return Ok(cities);
         }
 
-        [HttpGet("{id}")]
+        [HttpPost("add")]
+        public async Task<IActionResult> AddCity(City city)
+        {
+            await db.Cities.AddAsync(city);
+
+           await db.SaveChangesAsync();
+
+            
+            return Ok(city);
+        }
+
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeleteCity(int id)
+        {
+            
+            
+            var iid= await db.Cities.FindAsync(id);
+
+             db.Cities.Remove(iid);
+
+            await db.SaveChangesAsync();
+
+
+            return Ok();
+
+        }
+
+            [HttpGet("{id}")]
         public string Get(int id)
         {
             return "Pune";
