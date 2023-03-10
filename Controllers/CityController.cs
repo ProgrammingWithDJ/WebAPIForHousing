@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPIForHousing.Data;
+using WebAPIForHousing.Data.Repo;
 using WebAPIForHousing.Models;
 
 namespace WebAPIForHousing.Controllers
@@ -11,25 +12,27 @@ namespace WebAPIForHousing.Controllers
     public class CityController : ControllerBase
     {
         private readonly DataContext db;
+        private readonly ICityRepository cityRepository;
 
-        public CityController(DataContext db)
+        public CityController(ICityRepository cityRepository)
         {
             this.db = db;
+            this.cityRepository = cityRepository;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetCities()
         {
-            var cities = await db.Cities.ToListAsync();
+            var cities = await cityRepository.GetCitiesAsync();
             return Ok(cities);
         }
 
         [HttpPost("add")]
         public async Task<IActionResult> AddCity(City city)
         {
-            await db.Cities.AddAsync(city);
+             cityRepository.AddCity(city);
 
-           await db.SaveChangesAsync();
+           await cityRepository.SaveAsync();
 
             
             return Ok(city);
@@ -38,13 +41,9 @@ namespace WebAPIForHousing.Controllers
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteCity(int id)
         {
-            
-            
-            var iid= await db.Cities.FindAsync(id);
+           cityRepository.DeleteCity(id);
 
-             db.Cities.Remove(iid);
-
-            await db.SaveChangesAsync();
+            await cityRepository.SaveAsync();
 
 
             return Ok();
