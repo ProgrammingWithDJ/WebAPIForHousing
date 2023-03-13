@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPIForHousing.Data;
-using WebAPIForHousing.Data.Repo;
+using WebAPIForHousing.Interfaces;
 using WebAPIForHousing.Models;
 
 namespace WebAPIForHousing.Controllers
@@ -11,39 +11,38 @@ namespace WebAPIForHousing.Controllers
     [ApiController]
     public class CityController : ControllerBase
     {
-        private readonly DataContext db;
-        private readonly ICityRepository cityRepository;
+        private readonly IUnitOfWork unitOfWork;
 
-        public CityController(ICityRepository cityRepository)
+        public CityController(IUnitOfWork unitOfWork)
         {
-            this.db = db;
-            this.cityRepository = cityRepository;
+            
+            this.unitOfWork = unitOfWork;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetCities()
         {
-            var cities = await cityRepository.GetCitiesAsync();
+            var cities = await unitOfWork.cityRepository.GetCitiesAsync();
             return Ok(cities);
         }
 
         [HttpPost("add")]
         public async Task<IActionResult> AddCity(City city)
         {
-             cityRepository.AddCity(city);
+             unitOfWork.cityRepository.AddCity(city);
 
-           await cityRepository.SaveAsync();
+           await unitOfWork.SaveAsync();
 
-            
-            return Ok(city);
+
+            return StatusCode(201);
         }
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteCity(int id)
         {
-           cityRepository.DeleteCity(id);
+           unitOfWork.cityRepository.DeleteCity(id);
 
-            await cityRepository.SaveAsync();
+            await unitOfWork.SaveAsync();
 
 
             return Ok();

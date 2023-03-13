@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using WebAPIForHousing.Interfaces;
 using WebAPIForHousing.Models;
 
 
@@ -38,9 +39,5 @@ namespace WebAPIForHousing.Data.Repo
         }
 
 
-        public async Task<bool> SaveAsync()
-        {
-            return await dc.SaveChangesAsync() > 0;
-        }
     }
 }
