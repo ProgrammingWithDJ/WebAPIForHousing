@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPIForHousing.Data;
+using WebAPIForHousing.Dtos;
 using WebAPIForHousing.Interfaces;
 using WebAPIForHousing.Models;
 
@@ -23,12 +24,26 @@ namespace WebAPIForHousing.Controllers
         public async Task<IActionResult> GetCities()
         {
             var cities = await unitOfWork.cityRepository.GetCitiesAsync();
-            return Ok(cities);
+
+            var citiesDto = from c in cities
+                            select new CityDto()
+                            {
+                                Id = c.Id,
+                                Name = c.Name,
+                            };
+
+            return Ok(citiesDto);
         }
 
         [HttpPost("add")]
-        public async Task<IActionResult> AddCity(City city)
+        public async Task<IActionResult> AddCity(CityDto cityDto)
         {
+            var city = new City
+            {
+                Name = cityDto.Name,
+                LastUpdatedBy =1,
+                LastUpdatedOn= DateTime.Now
+            };
              unitOfWork.cityRepository.AddCity(city);
 
            await unitOfWork.SaveAsync();
