@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPIForHousing.Data;
@@ -13,11 +14,13 @@ namespace WebAPIForHousing.Controllers
     public class CityController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IMapper mapper;
 
-        public CityController(IUnitOfWork unitOfWork)
+        public CityController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             
             this.unitOfWork = unitOfWork;
+            this.mapper = mapper;
         }
 
         [HttpGet]
@@ -25,25 +28,18 @@ namespace WebAPIForHousing.Controllers
         {
             var cities = await unitOfWork.cityRepository.GetCitiesAsync();
 
-            var citiesDto = from c in cities
-                            select new CityDto()
-                            {
-                                Id = c.Id,
-                                Name = c.Name,
-                            };
-
+            var citiesDto = mapper.Map<IEnumerable<CityDto>>(cities);
+            
             return Ok(citiesDto);
         }
 
         [HttpPost("add")]
         public async Task<IActionResult> AddCity(CityDto cityDto)
         {
-            var city = new City
-            {
-                Name = cityDto.Name,
-                LastUpdatedBy =1,
-                LastUpdatedOn= DateTime.Now
-            };
+            var city = mapper.Map<City>(cityDto);
+            city.LastUpdatedBy = 1;
+            city.LastUpdatedOn=DateTime.Now;
+            
              unitOfWork.cityRepository.AddCity(city);
 
            await unitOfWork.SaveAsync();
