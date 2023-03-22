@@ -48,6 +48,24 @@ namespace WebAPIForHousing.Controllers
             return StatusCode(201);
         }
 
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateCity(int id,CityDto cityDto)
+        {
+            var cityFromDb = await unitOfWork.cityRepository.FindCity(id);
+
+            // var city = mapper.Map<City>(cityDto);
+            cityFromDb.LastUpdatedBy = 1;
+            cityFromDb.LastUpdatedOn = DateTime.Now;
+            mapper.Map(cityDto,cityFromDb);
+
+
+            await unitOfWork.SaveAsync();
+
+
+            return StatusCode(200);
+        }
+
+
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteCity(int id)
         {
