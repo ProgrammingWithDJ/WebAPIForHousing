@@ -5,6 +5,9 @@ using WebAPIForHousing.Data.Repo;
 using WebAPIForHousing.Interfaces;
 using AutoMapper;
 using WebAPIForHousing.Helpers;
+using System.Net;
+using Microsoft.AspNetCore.Diagnostics;
+using Azure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +28,28 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    app.UseExceptionHandler(
+        options =>
+        {
+            options.Run(
+                async context =>
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    var ex = context.Features.Get<IExceptionHandlerFeature>();
+
+                    if (ex != null)
+                    {
+                        await context.Response.WriteAsync(ex.Error.Message);
+                    }
+                }
+
+                );
+        }
+        
+        );
 }
 
 app.UseHttpsRedirection();
