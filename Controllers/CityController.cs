@@ -51,7 +51,14 @@ namespace WebAPIForHousing.Controllers
         [HttpPut("update/{id}")]
         public async Task<IActionResult> UpdateCity(int id,CityDto cityDto)
         {
+
+            if (id != cityDto.Id)
+                return BadRequest("Id is not valid");
+
             var cityFromDb = await unitOfWork.cityRepository.FindCity(id);
+
+            if (cityFromDb == null)
+                return BadRequest("Cannot update the record since it is null");
 
             // var city = mapper.Map<City>(cityDto);
             cityFromDb.LastUpdatedBy = 1;
