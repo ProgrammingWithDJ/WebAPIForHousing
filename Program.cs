@@ -9,6 +9,7 @@ using System.Net;
 using Microsoft.AspNetCore.Diagnostics;
 using Azure;
 using WebAPIForHousing.Extensions;
+using WebAPIForHousing.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,7 +27,7 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-app.ConfigureExceptionHandler(app.Environment);
+app.UseMiddleware<ExceptionMiddlewares>();
 
 app.UseHttpsRedirection();
 
