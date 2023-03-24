@@ -27,6 +27,18 @@ namespace WebAPIForHousing.Middlewares
             {
                 ApiErrors response;
                 HttpStatusCode statusCode = HttpStatusCode.InternalServerError;
+                String message;
+                var exceptionType= ex.GetType();
+
+                if(exceptionType == typeof(UnauthorizedAccessException))
+                {
+                    statusCode= HttpStatusCode.Forbidden;
+                    message= "You are not authorize";
+                }else 
+                {
+                    statusCode = HttpStatusCode.InternalServerError;
+                    message = "Unknown error occured";
+                }
 
                 if (env.IsDevelopment())
                 {

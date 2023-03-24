@@ -1,11 +1,18 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using System.Net;
+using WebAPIForHousing.Middlewares;
 
 namespace WebAPIForHousing.Extensions
 {
     public static class ExceptionMiddlewareExtensions
     {
+
         public static void ConfigureExceptionHandler(this IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            app.UseMiddleware<ExceptionMiddlewares>();
+
+        }
+        public static void ConfigureBuiltInExceptionHandler(this IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
