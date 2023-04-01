@@ -15,6 +15,8 @@ namespace WebAPIForHousing.Data
 
         public ICityRepository cityRepository => new CityRepository(db);
 
+        public IUserRepository userRepository => new UserRepository(db);
+
         public void AddCity(City city)
         {
             throw new NotImplementedException();
