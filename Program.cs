@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Diagnostics;
 using Azure;
 using WebAPIForHousing.Extensions;
 using WebAPIForHousing.Middlewares;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,14 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddControllers();
 builder.Services.AddAutoMapper(typeof(AutomapperProfiles).Assembly);
+builder.Services.AddApiVersioning(
+    x =>
+    {
+        x.DefaultApiVersion = new ApiVersion(1, 0);
+        x.AssumeDefaultVersionWhenUnspecified = true;
+        x.ReportApiVersions = true;
+        x.ApiVersionReader = new HeaderApiVersionReader("x-Api-version"); // Include if you want to put it as part of the header.
+    });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
